@@ -21,6 +21,7 @@ export default class App extends React.Component {
       password:'',
       authenticating:false,
       user:null,
+      emailVerified:false,
       error:'',
       listViewData: data,
       newContact:''
@@ -91,7 +92,26 @@ export default class App extends React.Component {
       Username:this.state.Username,
       password:this.state.password
     });
+          //  this.handleVerifyEmail(firebase.auth)
+  
     }
+    emailverification(){
+   
+      var user = firebase.auth().currentUser;
+
+    user.sendEmailVerification().then(()=> {
+      // Email sent.
+      this.setState({
+        emailVerified:true
+      })
+      console.log("sent");
+
+    }).catch(function(error) {
+      // An error happened.
+      console.log(error);
+    });
+  
+  }
 onPressLogOut() {
 
   firebase.auth().signOut()
@@ -240,7 +260,7 @@ showInformation(){
             </Container>
           );
 }
-        if (this.state.user !== null) {
+        if ((this.state.user !== null)&&(this.state.emailVerified==true)) {
     return (
       <Container style={styles.container2}>
       <Header style={{marginTop:StatusBar.currentHeight}}>
@@ -310,6 +330,7 @@ showInformation(){
            />
            <Button1 onpress={() =>this.signInfunction(this.state.email,this.state.password)}>Sign Up</Button1>
            <Button1 onpress={() =>this.logInfunction(this.state.email,this.state.password)}>Log In</Button1>
+           <Button1 onpress={() =>this.emailverification()}>send verification email</Button1>
             </View>
           )
  }
